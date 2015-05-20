@@ -1,0 +1,81 @@
+search()
+y <- 10
+f <- function(x){}
+f <- function(x){
+y <-2
+y^2 + g(x)
+}
+g <- function(x){}
+g <- function(x){}
+g <- function(x){
+x*y
+}
+f(3)
+f <- function(x) {#
+        g <- function(y) {#
+                y + z#
+        }#
+        z <- 4#
+        x + g(x)#
+}
+z <- 10
+f(3)
+wd
+wd()
+pwd()
+gwd()
+swd()
+getwd()
+setwd("~/Downloads/")
+getwd()
+ls
+getwd()
+setwd("~/MyProject/datasciencecoursera/R.Programming/")
+ls
+ls .R
+ls R
+list.files
+list.dirs
+source("pollutantmean.R")
+source("pollutantmean.R")
+source("pollutantmean.R")
+source("pollutantmean.R")
+pollutantmean("specdata", "sulfate", 1:10)#
+pollutantmean("specdata", "nitrate", 70:72)#
+pollutantmean("specdata", "nitrate", 23)
+pollutantmean("specdata", "sulfate", 1:10)
+source("pollutantmean.R")
+pollutantmean("specdata", "sulfate", 1:10)
+source("pollutantmean.R")
+pollutantmean("specdata", "sulfate", 1:10)
+source("pollutantmean.R")
+pollutantmean("specdata", "sulfate", 1:10)
+pollutantmean("specdata", "nitrate", 70:72)
+source("http://d396qusza40orc.cloudfront.net/rprog%2Fscripts%2Fsubmitscript1.R")
+source("submitscript1.R")
+submit()
+submit()
+submit()
+submit()
+source("complete.R")
+complete("specdata", 30:25)
+submit()
+submit()
+submit()
+source("corr.R")
+corr("specdata",300)
+source("corr.R")
+corr("specdata",300)
+cr <- corr("specdata", 150)#
+head(cr)
+source("corr.R")
+cr <- corr("specdata", 150)
+source("corr.R")
+cr <- corr("specdata", 150)
+;
+cr <- corr("specdata", 150)#
+head(cr)
+head(cr)
+submit()
+submit()
+submit()
