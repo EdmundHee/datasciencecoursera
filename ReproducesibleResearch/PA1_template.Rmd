@@ -1,0 +1,136 @@
+Reproducible Research: Assignment 1
+==========================================
+
+```
+library(ggplot2)
+library(scales)
+library(Hmisc)
+```
+
+## Required Settings
+```{r}
+echo = TRUE  
+options(scipen = 1)  
+```
+
+## Load & Process Data 
+```{r}
+unzip("activity.zip")
+dataTable <- read.csv("activity.csv", colClasses = c("integer", "Date", "factor"))
+dataTable$month <- as.numeric(format(dataTable$date, "%m"))
+noNA <- na.omit(dataTable)
+rownames(noNA) <- 1:nrow(noNA)
+head(noNA)
+dim(noNA)
+library(ggplot2)
+```
+
+
+### What is mean total number of steps taken per day?
+
+* Histogram of the total number of steps taken each day
+```{r}
+ggplot(noNA, aes(date, steps)) + 
+geom_bar(stat = "identity", colour = "steelblue", fill = "steelblue", width = 0.7) + 
+facet_grid(. ~ month, scales = "free") + 
+labs(title = "Histogram of Total Number of Steps Taken Each Day", x = "Date", y = "Total Number of Steps")
+```
+
+* Calculate and report the mean and median total number of steps taken per day
+
+Mean total number of steps taken per day:
+```{r}
+totalSteps <- aggregate(noNA$steps, list(Date = noNA$date), FUN = "sum")$x
+mean(totalSteps)
+```
+Median total number of steps taken per day:
+```{r}
+median(totalSteps)
+```
+
+### What is the average daily activity pattern?
+
+```{r}
+avgSteps <- aggregate(noNA$steps, list(interval = as.numeric(as.character(noNA$interval))), FUN = "mean")
+names(avgSteps)[2] <- "meanOfSteps"
+
+ggplot(avgSteps, aes(interval, meanOfSteps)) + 
+geom_line(color = "steelblue", size = 0.8) + 
+labs(title = "Time Series Plot of the 5-minute Interval", x = "5-minute intervals", y = "Average Number of Steps Taken")
+```
+
+* Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r}
+avgSteps[avgSteps$meanOfSteps == max(avgSteps$meanOfSteps), ]
+```
+
+### Imputing missing values
+
+```{r}
+sum(is.na(dataTable))
+```
+```{r}
+newDataTable <- dataTable
+for (i in 1:nrow(newDataTable)) {
+    if (is.na(newDataTable$steps[i])) {
+        newDataTable$steps[i] <- avgSteps[which(newDataTable$interval[i] == avgSteps$interval), ]$meanOfSteps
+    }
+}
+
+head(newDataTable)
+sum(is.na(newDataTable))
+```
+
+```{r}
+ggplot(newDataTable, aes(date, steps)) + 
+geom_bar(stat = "identity",colour = "steelblue", fill = "steelblue",width = 0.7) + 
+facet_grid(. ~ month, scales = "free") + 
+labs(title = "Histogram of Total Number of Steps Taken Each Day (without missing data)", x = "Date", y = "Total Number of Steps")
+```
+
+Mean total number of steps taken per day:
+```{r}
+newTotalSteps <- aggregate(newDataTable$steps, 
+                           list(Date = newDataTable$date), 
+                           FUN = "sum")$x
+newMean <- mean(newTotalSteps)
+newMean
+```
+Median total number of steps taken per day:
+```{r}
+newMedian <- median(newTotalSteps)
+newMedian
+```
+Compare them with the two before imputing missing data:
+```{r}
+oldMean <- mean(totalSteps)
+oldMedian <- median(totalSteps)
+newMean - oldMean
+newMedian - oldMedian
+```
+
+### Are there differences in activity patterns between weekdays and weekends?
+
+```{r}
+head(newDataTable)
+newDataTable$weekdays <- factor(format(newDataTable$date, "%A"))
+levels(newDataTable$weekdays)
+levels(newDataTable$weekdays) <- list(weekday = c("Monday", "Tuesday",
+                                             "Wednesday", 
+                                             "Thursday", "Friday"),
+                                 weekend = c("Saturday", "Sunday"))
+levels(newDataTable$weekdays)
+table(newDataTable$weekdays)
+```
+
+```{r}
+avgSteps <- aggregate(newDataTable$steps, 
+                      list(interval = as.numeric(as.character(newDataTable$interval)), 
+                           weekdays = newDataTable$weekdays),
+                      FUN = "mean")
+names(avgSteps)[3] <- "meanOfSteps"
+library(lattice)
+xyplot(avgSteps$meanOfSteps ~ avgSteps$interval | avgSteps$weekdays, 
+       layout = c(1, 2), type = "l", 
+       xlab = "Interval", ylab = "Number of steps")
+```
